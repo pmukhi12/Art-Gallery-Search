@@ -1,0 +1,23 @@
+/* all custom styles */
+* {
+    font-family: 'Lucida Grande', 'Calibri', Helvetica, Arial, sans-serif;
+}
+.jumbotron {
+    padding: 1px 0;
+    margin: auto 0;
+    color: whitesmoke;
+    background-color: rgb(43, 98, 180);
+}
+
+h5 {
+    font-size: 0.75rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+.small-text {
+    font-family: 'Lucida Grande', 'Calibri', Helvetica, Arial, sans-serif;
+    font-size: .75rem;
+}
