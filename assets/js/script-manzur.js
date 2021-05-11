@@ -237,7 +237,7 @@ function updateSearchList(sText, museum) {
 
     // list item
     var liEl = $('<li>');
-    liEl.addClass('list-group-item small-text');
+    liEl.addClass('list-group-item');
     liEl.attr('id', sText + '-' + museum);
     liEl.html(sText + ' ' + "<small class='text-muted'>" + museum + '</small');
     liEl.on('click', searchMuseumFromHist);
