@@ -13,6 +13,7 @@ var searchData = {
     museum: String,
     serachText: String
 };
+var numDisplay = 10;
 
 // funtion to display time
 function displayTime() {
@@ -23,42 +24,87 @@ function displayTime() {
 // call displayTime function in every second
 setInterval(displayTime, 1000);
 
-// remove search text from history
-function removeSearchText(sText, museum){
-    var found = false;
-    for (var i = 0; i < searchHist.length; i++) {
-        if (sText === searchHist[i].serachText && museum === searchHist[i].museum) {
-            found = true;
-            break;
-        }
-    }  
-    if (found) {
-        searchHist.splice(i, 1);
-        saveSearch();
-    }
+// get museum name
+function getMuseumName(museum) {
+    if (museum === 'Met')
+        return 'The Metropolitan Museum of Modern Arts';
+    else if (museum === 'ArtIC')
+        return 'The Art Institue of Chicago';
 }
 
-// search museum for text from the history (handle click on close button)
-function searchMuseumFromHist(event) {
-    event.preventDefault();
-    
-    // find id and check if its close button
-    var histText = event.target.id;
-    var sText, museum, token;
-    token = histText.split('_')[0];
-    sText = token.split('-')[0];
-    museum = token.split('-')[1];
-    if (histText.indexOf('close') > 0) {
-        removeSearchText(sText, museum);
-        $(event.target).parent().remove();
-        // clear result page
-        resultEl.empty();
+// get museum name
+function getMuseumUrl(museum) {
+    if (museum === 'Met')
+        return 'https://www.metmuseum.org/';
+    else if (museum === 'ArtIC')
+        return 'https://www.artic.edu/';
+}
+
+// display results - only 10 items
+// display results - only 10 items
+function displayResult(data, sText, museum) {
+    console.log(data);
+    // empty result pane
+    resultEl.empty();
+
+    // result heading
+    var h3El = $('<h3>');
+    h3El.addClass("card-header");    
+    h3El.html("Search Result for <strong>" + sText + "</strong> on " + getMuseumName(museum));
+    resultEl.append(h3El);
+
+    // result body
+    var divEl = $('<div>');
+    divEl.addClass("card-body");    
+
+    // show only numDisplay of them
+    var total = data.total;
+    var h6El = $('<h6>');
+    if (total > 0) {
+        h6El.html("Total " + total + " items found, showing first " + numDisplay + " of them, to see all of them please search on <a href=" + getMuseumUrl(museum) + ">" + getMuseumName(museum) + "</a>");
+        divEl.append(h6El);
+
+        var tableEl = $('<table>');
+        tableEl.addClass("table table-bordered");
+        for (var i = 0; i < numDisplay; i++) {
+            var objectUrl = "https://collectionapi.metmuseum.org/public/collection/v1/objects/" + data.objectIDs[i];
+            // fetch data
+            fetch(objectUrl)
+                .then (function(response){
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    else {
+                        resultEl.empty();
+                        throw new Error("Error searching " + sText + " in " + museum + " " + response.statusText);  
+                    }          
+                }) 
+                .then(function (data) {
+                    console.log(data);
+                    var rowEl = $('<tr>');
+                    rowEl.attr('valign', 'top');
+                    rowEl.html("<td><p class='small-text'>Name: " + data.objectName + 
+                    "<br>Artist: " + data.artistDisplayName + "<br>Year: " + data.objectDate + "<br>Medium: " + data.medium +
+                    "<br>Department: " + data.department + "<br>Period: " + data.period + 
+                    "</p></td><td><img src="+data.primaryImageSmall+"></td>");
+                    tableEl.append(rowEl);
+                })
+                .catch(function(error) {
+                    var pEl = $('<p>');
+                    pEl.addClass('p-1 ml-2 mt-2');
+                    pEl.text(error.message);
+                    divEl.append(pEl);
+                });
+        }
+        tableEl.html('</table');
     }
     else {
-        searchMuseum(sText, museum)
+        h6El.html("No item found for " + sText + ", please check your search text!");
+        divEl.append(h6El);
     }
+    divEl.append(tableEl);
+    resultEl.append(divEl);
 }
-
 
 // search museum for text
 function searchMuseum(sText, museum) {
@@ -78,52 +124,17 @@ function searchMuseum(sText, museum) {
             }
         else 
             resultEl.empty();
-            throw new Error("Error searching " + sText + " in " + museum + " " + response.statusText)            
+            throw new Error("Error searching " + sText + " in " + museum + " " + response.statusText);            
         }) 
         .then(function (data) {
-            resultEl.text(data);
-            console.log(data);
-
+            displayResult(data, sText, museum);
         })
         .catch(function(error) {
-            resultEl.html("<h5 class='p-1 ml-2 mt-2'>" + error.message + "<h5>");
+            var h5El = $('<h5>');
+            h5El.addClass('p-1 ml-2 mt-2');
+            h5El.text(error.message);
+            resultEl.append(h5El);
         });
-}
-
-// update search list
-function updateSearchList(sText, museum) {
-    // template
-    // <li class="list-group-item p-2 ml-2 mr-2">An item<span class="btn close btn-secondary">X</span></li>
-
-    // list item
-    var liEl = $('<li>');
-    liEl.addClass('list-group-item small-text');
-    liEl.attr('id', sText + '-' + museum);
-    liEl.text(sText + '     (' + museum + ')');
-    liEl.on('click', searchMuseumFromHist);
-
-    // close button
-    var spanEl = $('<span>');
-    spanEl.addClass('btn close btn-secondary small-text');
-    spanEl.text('X');
-    spanEl.attr('id', sText + '-' + museum + '_close');
-
-    // add close button to list item
-    liEl.append(spanEl);
-
-    // add list item to ul
-    searchListEl.append(liEl);
-
-    //  clear search field
-    searchTextEl.val('');
-}
-
-// show/hide search history
-function showHide() {
-    if (!searchHist.length)
-        historyEl.addClass('invisible');
-    else
-        historyEl.removeClass('invisible');
 }
 
 // save searches
@@ -134,7 +145,7 @@ function saveSearch() {
     showHide();
 }
 
-// save new search text
+// save new search text - from input 
 function saveSearchText(sText, museum) {
     // first check if we have it in history already
     var found = false;
@@ -155,6 +166,112 @@ function saveSearchText(sText, museum) {
     showHide();
 }
 
+// event handler for main serach button
+searchBtnEl.on('click', function(event) {
+    event.preventDefault();
+    var sText = searchTextEl.val();
+    var museum = museumEl.val();
+
+    saveSearchText(sText, museum);
+    updateSearchList(sText, museum);
+    searchMuseum(sText, museum);
+});
+
+// event handler for museum select - enable search
+museumEl.change(function() {
+    var option = museumEl.val();
+    
+    if (option === 'none')
+        disableSearchButton(true);
+    else
+        disableSearchButton(false);
+});
+
+
+// remove search text from history
+function removeSearchText(sText, museum){
+    var found = false;
+    for (var i = 0; i < searchHist.length; i++) {
+        if (sText === searchHist[i].serachText && museum === searchHist[i].museum) {
+            found = true;
+            break;
+        }
+    }  
+    if (found) {
+        searchHist.splice(i, 1);
+        saveSearch();
+        museumEl.val('none');
+        searchTextEl.val(' ');
+        disableSearchButton(true);
+    }
+}
+
+// search museum for text from the history (handle click on close button)
+function searchMuseumFromHist(event) {
+    event.preventDefault();
+    
+    // find id and check if its close button
+    var histText = event.target.id;
+    var sText, museum, token;
+    token = histText.split('_')[0];
+    sText = token.split('-')[0];
+    museum = token.split('-')[1];
+    if (histText.indexOf('close') > 0) {
+        removeSearchText(sText, museum);
+        $(event.target).parent().remove();
+        // clear result page
+        resultEl.empty();
+    }
+    else {
+        disableSearchButton(false);
+        museumEl.val(museum);
+        searchTextEl.val(sText);
+        searchMuseum(sText, museum)
+    }
+}
+
+// update search list
+function updateSearchList(sText, museum) {
+    // template
+    // <li class="list-group-item p-2 ml-2 mr-2">An item<span class="btn close btn-secondary">X</span></li>
+
+    // list item
+    var liEl = $('<li>');
+    liEl.addClass('list-group-item small-text');
+    liEl.attr('id', sText + '-' + museum);
+    liEl.html(sText + ' ' + "<small class='text-muted'>" + museum + '</small');
+    liEl.on('click', searchMuseumFromHist);
+
+    // close button
+    var spanEl = $('<span>');
+    spanEl.addClass('btn close btn-secondary small-text');
+    spanEl.text('X');
+    spanEl.attr('id', sText + '-' + museum + '_close');
+
+    // add close button to list item
+    liEl.append(spanEl);
+
+    // add list item to ul
+    searchListEl.append(liEl);
+
+    //  clear search field
+    // searchTextEl.val('');
+}
+
+// toggle search button
+function disableSearchButton(val) {
+    searchTextEl.attr('disabled', val);
+    searchBtnEl.attr('disabled', val);
+}
+
+// show/hide search history
+function showHide() {
+    if (!searchHist.length)
+        historyEl.addClass('invisible');
+    else
+        historyEl.removeClass('invisible');
+}
+
 // function load saved cities
 function loadSavedSearchText() {
     var str = localStorage.getItem('searches');
@@ -173,41 +290,8 @@ function loadSavedSearchText() {
     showHide();
 }
 
-// toggle search button
-function disableSearchButton(val) {
-    searchTextEl.attr('disabled', val);
-    searchBtnEl.attr('disabled', val);
-
-    // hide/unhide history list
-    if (val) 
-        historyEl.removeClass('card');
-    else
-        historyEl.addClass('card');
-}
-
 // disable search at start-up until user selects a museum
 $(document).ready(function() {
     disableSearchButton(true);
     loadSavedSearchText();
-});
-
-// event handler for museum select - enable search
-museumEl.change(function() {
-    var option = museumEl.val();
-    
-    if (option === 'none')
-        disableSearchButton(true);
-    else
-        disableSearchButton(false);
-});
-
-// event handler for main serach button
-searchBtnEl.on('click', function(event) {
-    event.preventDefault();
-    var sText = searchTextEl.val();
-    var museum = museumEl.val();
-
-    saveSearchText(sText, museum);
-    updateSearchList(sText, museum);
-    searchMuseum(sText, museum);
 });
