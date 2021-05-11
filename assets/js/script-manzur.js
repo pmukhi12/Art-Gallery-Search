@@ -116,6 +116,7 @@ function searchMuseum(sText, museum) {
     url += sText;
     console.log(url, sText);
 
+    // to do: ArtIC
     // fetch data
     fetch(url)
         .then (function(response){
