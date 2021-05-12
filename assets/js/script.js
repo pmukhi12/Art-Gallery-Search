@@ -53,7 +53,7 @@ function displayMetResult(data, sText, museum) {
     // result heading
     var h3El = $('<h3>');
     h3El.addClass("card-header");    
-    h3El.html("Search Result for <strong>" + sText + "</strong> on " + getMuseumName(museum));
+    h3El.html("Search Result for <strong>'" + sText + "'</strong> on " + getMuseumName(museum));
     resultEl.append(h3El);
 
     // result body
@@ -104,7 +104,7 @@ function displayMetResult(data, sText, museum) {
         tableEl.html('</table');
     }
     else {
-        h6El.html("No item found for " + sText + ", please check your search text!");
+        h6El.html("No item found for '" + sText + "', please check your search text!");
         divEl.append(h6El);
     }
     divEl.append(tableEl);
@@ -128,9 +128,9 @@ function displayArtICResult(data, sText, museum) {
     // show only numDisplay of them
     var h6El = $('<h6>');
     if (artICData.length !== 0) {
-        h6El.html("Showing first 10 items for " + sText + ". To see all of them please search on <a href=" + getMuseumUrl(museum) + ">" + getMuseumName(museum) + "</a>");
+        h6El.html("Showing first 10 items for '" + sText + "'. To see all of them please search on <a href=" + getMuseumUrl(museum) + ">" + getMuseumName(museum) + "</a>");
     } else {
-        h6El.html("No item found for " + sText + ". Please check your search text!");
+        h6El.html("No item found for '" + sText + "'. Please check your search text!");
     }
     divEl.append(h6El);
     var tableEl = $('<table>');
@@ -251,9 +251,18 @@ searchBtnEl.on('click', function(event) {
     var sText = searchTextEl.val().trim();
     var museum = museumEl.val();
 
-    saveSearchText(sText, museum);
-    updateSearchList(sText, museum);
-    searchMuseum(sText, museum);
+    if (sText !== '') {
+        saveSearchText(sText, museum);
+        updateSearchList(sText, museum);
+        searchMuseum(sText, museum);
+    }
+    else {
+        resultEl.empty();
+        var h5El = $('<h5>');
+        h5El.addClass('p-1 ml-2 mt-2');
+        h5El.text("Please enter a serch text, it can't be blank!");
+        resultEl.append(h5El);
+    }
 });
 
 // event handler for museum select - enable search
