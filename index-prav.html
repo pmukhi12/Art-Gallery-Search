@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./assets/css/style-manzur.css">
+    <title>Team04 Art Gallery Search</title> 
+</head>
+<body>
+    <!-- header -->
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container-fluid">
+          <h1 class="display-4 text-center">Art Gallery Search</h1>
+          <h4 class="text-center"><span id="date-time"></span></h4>
+          <h5 class="text-right">Team04</h5>
+        </div>
+    </div>
+    <!-- main -->
+    <main class="container-fluid">
+        <div class="row">
+            <!-- left side search and history panels -->
+            <section class="col-12 col-md-3">
+                <div class="card mb-3">
+                    <!-- left pane header -->
+                    <h3 class="card-header">Search:</h3>
+                    <!-- search input -->
+                    <form>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <!-- museum list -->
+                                <select class="custom-select custom-select-sm mb-3" name="museum" id="museum-id">
+                                    <option value="none">Please select...</option>
+                                    <option value="Met">Met Museum of Arts Collection</option>
+                                    <option value="ArtIC">Art Institute of Chicago</option>
+                                </select>
+                                <!-- input for serach text and search button -->
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control mb-1" id="search-text">
+                                    <button type="submit" class="btn btn-primary btn-sm mb-1" id="search-btn"><span class="fa fa-search"></span></button>
+                                </div>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <!-- place holder for search list -->
+                <div class="card" id="history-card">
+                    <h3 class="card-header">History:</h3>
+                    <ul class="list-group" id="search-list"></ul>
+                </div>
+            </section>
+  
+            <!-- placeholder for displaying result  -->
+            <section class="col-12 col-md-9">
+                <div class="card" id="results"></div>
+            </section>
+        </div>
+      </main>
+  
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script><script src="./assets/js/script-prav.js"></script>
+</body>
+</html>
