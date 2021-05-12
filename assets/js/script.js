@@ -286,12 +286,7 @@ function removeSearchText(sText, museum){
         }
     }  
     if (found) {
-        // initialize array, if removed element was the last one in the array
-        if (i === 0) 
-            searchHist = [];
-        else 
-            searchHist.splice(i, 1);
-    
+        searchHist.splice(i, 1);    
         saveSearch();
         museumEl.val('none');
         searchTextEl.val(' ');
