@@ -4,7 +4,7 @@ Web application to search two notable Art Galleries -
 - Metropolitan Museum of Arts Collection.
 - Art Institute of Chicago.
 
-This application allows a user to search weatArt Galleries in free-text format. Following sections describe how and where to get the code, how to install it locally and use this application.
+This application allows a user to search Art Galleries in free-text format. Following sections describe how and where to get the code, how to install it locally and use this application.
 
 ## Installation
 Code: [Code](https://github.com/pmukhi12/Art-Gallery-Search)

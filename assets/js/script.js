@@ -260,7 +260,7 @@ searchBtnEl.on('click', function(event) {
         resultEl.empty();
         var h5El = $('<h5>');
         h5El.addClass('p-1 ml-2 mt-2');
-        h5El.text("Please enter a serch text, it can't be blank!");
+        h5El.text("Please enter a search text, it can't be blank!");
         resultEl.append(h5El);
     }
 });
