@@ -6,6 +6,13 @@ Web application to search two notable Art Galleries -
 
 This application allows a user to search Art Galleries in free-text format. Following sections describe how and where to get the code, how to install it locally and use this application.
 
+## User Story
+```
+As an art lover, 
+I want to have a single location to search multiple art galleries,
+so that I can research my favorite art collection
+```
+
 ## Installation
 Code: [Code](https://github.com/pmukhi12/Art-Gallery-Search)
 
